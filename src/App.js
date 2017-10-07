@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 
-const Stack = ({stack}) => {
+const Stack = ({stack, editing}) => {
+  const cursor = editing ? '_' : '';
+
   return (
     <div>
-      { [4, 3, 2, 1].map((x, i) => <div key={i}>{stack[stack.length - x] ? stack[stack.length - x] : 0}</div>) }
+      { [4, 3, 2].map((x, i) => <div key={i}>{stack[stack.length - x] ? stack[stack.length - x] : 0}</div>) }
+
+      <div key={1}>{stack[stack.length - 1] ? stack[stack.length - 1] + cursor : 0}</div>
     </div>
   );
 }
@@ -66,7 +70,7 @@ class App extends Component {
 
 
     stack.push(op(x,y));
-    this.setState( { ...this.state, stack: stack } );  
+    this.setState( { ...this.state, stack: stack, editing: false } );  
   }
 
   render() {
@@ -74,7 +78,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Stack stack={this.state.stack}/>
+        <Stack stack={this.state.stack} editing={this.state.editing}/>
         <br/>
         <div>
           { digits.reverse().map(d => <NumberButton digit={d} key={d} callback={this.digitPressed}/>) }
