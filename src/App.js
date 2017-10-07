@@ -21,8 +21,8 @@ const Operatorbutton = ({symbol, operation, callback}) => {
   );
 }
 
-const EnterButton = () => {
-  return <button>Enter</button>
+const EnterButton = ({callback}) => {
+  return <button onClick={() => callback()} >Enter</button>
 }
 
 class App extends Component {
@@ -31,25 +31,39 @@ class App extends Component {
     super(props);
     
     this.state = {
-      stack: []
+      stack: [],
+      editing: false
     };
 
     this.digitPressed = this.digitPressed.bind(this);
     this.performOperation = this.performOperation.bind(this);
+    this.enterPressed = this.enterPressed.bind(this);
+  }
+
+  enterPressed() {
+    this.setState({...this.state, editing: false});
   }
 
   digitPressed(digit) {
     console.log(this.state.stack);
 
     let stack = this.state.stack.slice();
-    stack.push(digit);
-    this.setState( { ...this.state, stack: stack } );  
+    
+    if (this.state.editing) {
+      let x = stack.pop();
+      stack.push(x ? x * 10 + digit : digit);
+    } else {
+      stack.push(digit);
+    }
+
+    this.setState( { ...this.state, stack: stack, editing: true } );  
   }
 
   performOperation(op) {
     let stack = this.state.stack.slice();
     let x = stack.pop();
     let y = stack.pop();
+
 
     stack.push(op(x,y));
     this.setState( { ...this.state, stack: stack } );  
@@ -74,7 +88,7 @@ class App extends Component {
         </div>
         <br/>
         <div>
-          <EnterButton />
+          <EnterButton callback={this.enterPressed}/>
         </div>
       </div>  
     );
