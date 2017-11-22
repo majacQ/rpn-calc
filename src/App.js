@@ -15,13 +15,13 @@ const Stack = ({stack, editing}) => {
 
 const NumberButton = ({digit, callback}) => {
   return (
-    <button className="Digit-button" onClick={ () => callback(digit) }>{digit}</button>
+    <button onClick={ () => callback(digit) }>{digit}</button>
   );
-} 
+}
 
 const Operatorbutton = ({symbol, operation, callback}) => {
   return (
-    <button onClick={ () => callback(operation) }>{symbol}</button> 
+    <button onClick={ () => callback(operation) }>{symbol}</button>
   );
 }
 
@@ -33,55 +33,47 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = {
       stack: [],
       editing: false
     };
-
-    this.digitPressed = this.digitPressed.bind(this);
-    this.performOperation = this.performOperation.bind(this);
-    this.enterPressed = this.enterPressed.bind(this);
   }
 
-  enterPressed() {
-    this.setState({...this.state, editing: false});
+  enterPressed = () => {
+    this.setState({editing: false});
   }
 
-  digitPressed(digit) {
-    console.log(this.state.stack);
-
+  digitPressed = (digit) => {
     let stack = this.state.stack.slice();
-    
+
     if (this.state.editing) {
-      let x = stack.pop();
+      const x = stack.pop();
       stack.push(x ? x * 10 + digit : digit);
     } else {
       stack.push(digit);
     }
 
-    this.setState( { ...this.state, stack: stack, editing: true } );  
+    this.setState( { stack: stack, editing: true } );
   }
 
-  performOperation(op) {
-    let stack = this.state.stack.slice();
-    let x = stack.pop();
-    let y = stack.pop();
-
+  performOperation = (op) => {
+    const stack = this.state.stack.slice();
+    const x = stack.pop();
+    const y = stack.pop();
 
     stack.push(op(x,y));
-    this.setState( { ...this.state, stack: stack, editing: false } );  
+
+    this.setState( { stack: stack, editing: false } );
   }
 
   render() {
-    const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-
     return (
       <div className="App">
         <Stack stack={this.state.stack} editing={this.state.editing}/>
         <br/>
         <div>
-          { digits.reverse().map(d => <NumberButton digit={d} key={d} callback={this.digitPressed}/>) }
+          { [...Array(10).keys()].map(d => <NumberButton digit={d} key={d} callback={this.digitPressed}/>) }
         </div>
         <br/>
         <div>
@@ -94,7 +86,7 @@ class App extends Component {
         <div>
           <EnterButton callback={this.enterPressed}/>
         </div>
-      </div>  
+      </div>
     );
   }
 }
