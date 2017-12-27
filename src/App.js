@@ -2,13 +2,9 @@ import React, { Component } from 'react';
 import './App.css';
 
 const Stack = ({stack, editing}) => {
-  const cursor = editing ? '_' : '';
-
   return (
     <div>
-      { [4, 3, 2].map((x, i) => <div key={i}>{stack[stack.length - x] ? stack[stack.length - x] : 0}</div>) }
-
-      <div key={1}>{stack[stack.length - 1] ? stack[stack.length - 1] + cursor : 0}</div>
+      { stack.slice(-4).map((x, i) => <div key={i}>{x}</div>) }
     </div>
   );
 }
@@ -35,7 +31,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      stack: [],
+      stack: [0, 0, 0, 0],
       editing: false
     };
   }
@@ -48,10 +44,10 @@ class App extends Component {
     let stack = this.state.stack.slice();
 
     if (this.state.editing) {
-      const x = stack.pop();
-      stack.push(x ? x * 10 + digit : digit);
+      stack.push(stack.pop() * 10 + digit);
     } else {
       stack.push(digit);
+      stack.shift();
     }
 
     this.setState( { stack: stack, editing: true } );
@@ -59,10 +55,9 @@ class App extends Component {
 
   performOperation = (op) => {
     const stack = this.state.stack.slice();
-    const x = stack.pop();
-    const y = stack.pop();
 
-    stack.push(op(x,y));
+    stack.push(op(stack.pop(), stack.pop()));
+    stack.unshift(0);
 
     this.setState( { stack: stack, editing: false } );
   }
