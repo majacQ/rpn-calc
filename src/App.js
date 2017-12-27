@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
 
+const StackSize = 4;
+
 const Stack = ({stack, editing}) => {
   return (
     <div>
-      { stack.slice(-4).map((x, i) => <div key={i}>{x}</div>) }
+      { stack.slice(-1 * StackSize).map((x, i) => <div key={i}>{x}</div>) }
     </div>
   );
 }
@@ -31,7 +33,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      stack: [0, 0, 0, 0],
+      stack: Array(4).fill(0),
       editing: false
     };
   }
